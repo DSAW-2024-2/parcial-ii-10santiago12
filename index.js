@@ -1,30 +1,31 @@
 // index.js
+require('dotenv').config();
 const express = require('express');
 const app = express();
-const loginRoute = require('./login/auth');
-const { authToken } = require('./login/auth');
-const weatherRoute = require('./data/weather'); // Archivo para la consulta del clima
+const loginRoute = require('./auth'); // Ruta para el login
+const weatherRoute = require('./weather'); // Asegúrate de que este archivo exista y se llame 'weather.js'
 
+// Middleware para procesar datos JSON
 app.use(express.json());
 
 // Ruta para el login
 app.use('/login', loginRoute);
 
-// Ruta protegida para consultar el clima
-app.use('/weather', authToken, weatherRoute);
+// Ruta para obtener el clima
+app.use('/weather', weatherRoute); // Asegúrate de que esta ruta esté configurada correctamente
 
 // Ruta principal
 app.get('/', (req, res) => {
-res.send('Consultemos el clima!!! :)');
+    res.send('Bienvenido!!');
 });
 
 // Manejar rutas no definidas
 app.use((req, res) => {
-res.status(404).json({ message: 'Ruta no encontrada' });
+    res.status(404).json({ message: 'Ruta no encontrada' });
 });
 
 // Iniciar el servidor
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-console.log(`Server is running on port ${PORT}`);
+    console.log(`Server is running on port ${PORT}`);
 });
